@@ -21,6 +21,7 @@ export const authentifier=(login,pwd)=>{
                 logoutElement.children[0].innerText="Logout("+nom+")"
 
                 // insertion du JWT dans le local storage
+                localStorage.setItem('token', token);
             }).catch(err=>alert(err))
             // (Logout (Sarah))
         }
@@ -34,7 +35,10 @@ export const authentifier=(login,pwd)=>{
 export const logout=()=>{
 
     fetch(url+"/users/logout",{ // tu dois injecter le token dans la requete
-        method:"POST"
+        method:"POST",
+        headers:{
+            'Authorigit clone <repository.git>zation' :  `Bearer ${token}`
+        }
     }).then(res=>{
         if(res.ok)
         {
@@ -42,6 +46,7 @@ export const logout=()=>{
             logoutElement.classList.add("hidden")
             loginElement.classList.remove("hidden")
             // suppression du JWT  du local Storage
+            localStorage.removeItem("jwt");
         }
         else{
             alert("error dans le logout")
@@ -58,11 +63,13 @@ export const register =(email,name,pwd,pwd2)=>{
         pwd:pwd,
         pwd2:pwd2
     }
+    const jwtToken = localStorage('jwt')
     fetch(url+"/users/register",{
         method:"POST",
         body:JSON.stringify(dataToSend),
         headers:{
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Authorization' :  `Bearer ${jwtToken}`
         }
     }).then(res=>{
         if(res.ok)
