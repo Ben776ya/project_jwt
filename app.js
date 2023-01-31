@@ -24,17 +24,6 @@ app.use(express.static("./public"))
 //middleware to parse json data on body request
 app.use(express.json())
 
-// injection du middleware des sessions
-// app.use(session({
-//     secret: "yahia",
-//     resave: false,
-//     saveUninitialized: true,
-//     cookie: { httpOnly:true }
-//   }))
-
-//injection de token
-// 
-
   
 
 
