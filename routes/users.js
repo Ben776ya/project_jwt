@@ -8,11 +8,6 @@ const router=express.Router();
 router.post('/register',async (req,res)=>{
     //recuperation des donnees
    const {login, pwd, pwd2, name} = req.body;
-   // const login=req.body.login
-   // const pwd=req.body.pwd
-   // const pwd2=req.body.pwd2
-   // const name=req.body.name
-   
 
    // verification des donnes
     if(!login || !pwd || !pwd2 || !name)
@@ -34,7 +29,8 @@ router.post('/register',async (req,res)=>{
         memos:[]
     })
     user.save().then(() =>{
-        const token = jwt.sign({ login: user.login }, "secretkeyappearshere", { expiresIn: "1h" });
+        // Token signing and sending it in the respnse
+        const token = jwt.sign({ login: user.login }, process.env.TOKEN_SECRET, { expiresIn: "1h" });
         return res.status(201).json({ message: 'success', token: token }); 
     }).catch(err => res.status(500).json({message:err}));
 });
@@ -51,12 +47,12 @@ router.post("/login",async (req,res, next)=>{
         const error = Error("Wrong details please check at once");
         return next(error);
     }
-        // insertion d une propriete dans la session
+        //creation and signing of the Token and sending back in the respnse
     let token;
     try{
 
     token = jwt.sign(
-        {loginl : findUser.login},"secretkeyappearhere",
+        {loginl : findUser.login},process.env.TOKEN_SECRET,
         {expiresIn: "1h"}
     );
     } catch(err){
@@ -73,13 +69,9 @@ router.post("/login",async (req,res, next)=>{
                 token : token,
             },
         });
-    //     req.session.login=login;
-    //     return res.json({message:'login success',nom:findUser.nom});//200
-    // res.status(400).json({message:'incorrect password'});
 });
-router.post("/logout",async (req,res)=>{
-   req.session.destroy();
-    res.json({message:'logout success'});
-})
+router.post("/logout", async (req, res) => {
+    res.json({ message: "Logged out successfully" });
+  });
 
 module.exports = {UserRouter: router};

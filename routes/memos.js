@@ -28,18 +28,7 @@ router.post("",authenticateToken,async (req,res)=>{
     {
         res.status(500).send({message:err})
     }
-    // enregister au niveau du Mongodb atlas
-/*
-    promise.then(x=>111111111111).catch(err=>2222222222222222)
 
-    try{
-       let x  =await promise
-        111111111111111111111111
-    }catch(err)
-    {
-        22222222222222222222222
-    }
-    */
 })
 
 // lister
@@ -47,23 +36,9 @@ router.get("", authenticateToken,async (req,res)=>{
     const nbr = req.query.nbr || req.user.memos.length
     const dataToSend=req.user.memos.filter((elem,index)=>index<nbr)
     res.json(dataToSend)
-    /*
-    const nbr=req.query.nbr
-    if(nbr)
-        res.json(await Memo.find().limit(nbr).exec());
-    else
-        res.json(await Memo.find());
-   */
-   /*const memos= await Memo.find();
-
-    const nbr=req.query.nbr || memos.length
-    */
 })
 
-// selectionner
 
-
-// modifier
 
 
 //supprimer ( method utilise en http : delete. l identifiant de la ressource doit etre dournie au niveau du URL)
@@ -84,8 +59,6 @@ router.delete("/:idMemo", authenticateToken,async (req,res)=>{
     await user.save();
 
     res.json({message:'delete with success'})
-    //user.save()
-    // suppression de la memo attribue a un user (authentofié)
     
     }
     catch(err){
@@ -97,7 +70,7 @@ function authenticateToken(req,res,next){
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ');
     if(token == null) return res.sendStatus(401);
-    jwt.verify(token, "secretkeyappearhere", (err, user)=>{
+    jwt.verify(token, process.env.TOKEN_SECRET , (err, user)=>{
         if(err) return res.sendStatus(403)
         req.User = user
         next()
